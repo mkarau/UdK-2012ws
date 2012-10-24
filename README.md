@@ -12,4 +12,3 @@ UdK Winter Semester 2012-2013 source code and links
 * Calendar: [Google Calendar](https://www.google.com/calendar/embed?src=jqrjvn8kv3shai09djt93eo07s%40group.calendar.google.com&ctz=Europe/Berlin)
 
 
-Change
