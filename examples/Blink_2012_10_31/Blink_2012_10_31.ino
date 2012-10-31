@@ -7,21 +7,29 @@
   This example code is in the public domain.
  */
 
-int ledPin;
+const int numberOfLEDs = 3;
+int ledPin[numberOfLEDs];
 
 
 
-void setup() {    
-  ledPin = 13;
+void setup() {
+  ledPin[0] = 13;
+  ledPin[1] = 12;
+  ledPin[2] = 11;
   // initialize the digital pin as an output.
   // Pin 12 has an LED connected on most Arduino boards:
-  pinMode(ledPin, OUTPUT);     
+  for (int i=0; i<numberOfLEDs; i++) {
+    pinMode(ledPin[i], OUTPUT);     
+  }
 }
 
 void loop() {
-  digitalWrite(ledPin, HIGH);   // set the LED on
+  for (int i=0; i<numberOfLEDs; i++) {
+    digitalWrite(ledPin[i], HIGH);   // set the LED on
+  } 
   delay(1000);              // wait for a second
-  digitalWrite(ledPin, LOW);    // set the LED off
-  delay(1000);              // wait for a second
-
+  for (int i=0; i<numberOfLEDs; i++) {
+    digitalWrite(ledPin[i], LOW);    // set the LED off
+  }
+  delay(1000);              // wait for a second  }
 }
