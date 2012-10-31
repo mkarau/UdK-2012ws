@@ -10,7 +10,9 @@
 const int numberOfLEDs = 3;
 int ledPin[numberOfLEDs];
 int blinkMillis = 500;
-
+long now = 0;
+long lastBlinkMillis = 0;
+boolean ledOn = false;
 
 
 void setup() {
@@ -25,7 +27,24 @@ void setup() {
 }
 
 void loop() {
-
+  now = millis();
+  
+  ///  Do other things!
+  
+  
+  if ((now - lastBlinkMillis) >= blinkMillis) {
+    lastBlinkMillis = now;
+    ledOn = !ledOn;
+    for (int i=0; i<numberOfLEDs; i++) {
+      if (ledOn) {
+        digitalWrite(ledPin[i], HIGH);   // set the LED on
+      } else {
+        digitalWrite(ledPin[i], LOW);   // set the LED on
+      }
+    }
+      
+  }
+/*  
   for (int i=0; i<numberOfLEDs; i++) {
     digitalWrite(ledPin[i], HIGH);   // set the LED on
   } 
@@ -34,4 +53,5 @@ void loop() {
     digitalWrite(ledPin[i], LOW);    // set the LED off
   }
   delay(blinkMillis);              // wait for a second  }
+*/
 }
