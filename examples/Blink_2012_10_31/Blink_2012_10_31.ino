@@ -9,6 +9,7 @@
 
 const int numberOfLEDs = 3;
 int ledPin[numberOfLEDs];
+int blinkMillis = 500;
 
 
 
@@ -24,12 +25,13 @@ void setup() {
 }
 
 void loop() {
+
   for (int i=0; i<numberOfLEDs; i++) {
     digitalWrite(ledPin[i], HIGH);   // set the LED on
   } 
-  delay(1000);              // wait for a second
+  delay(blinkMillis);              // wait for a second
   for (int i=0; i<numberOfLEDs; i++) {
     digitalWrite(ledPin[i], LOW);    // set the LED off
   }
-  delay(1000);              // wait for a second  }
+  delay(blinkMillis);              // wait for a second  }
 }
