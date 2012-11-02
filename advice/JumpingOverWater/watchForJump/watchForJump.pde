@@ -1,6 +1,7 @@
 /**
  * watchForJump
  * 2012-11-02
+ * Code: Matt Karau (mkarau@gmail.com)
  * UdK Digital Class, Short-term project: Freeze
  * 
  * Read data from the serial port (Arduino) and watch for a specific command.
