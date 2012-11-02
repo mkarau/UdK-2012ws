@@ -1,7 +1,8 @@
 Jumping Over Water
-UdK-2012ws
-Digital Class, Short-term Project: Freeze
 ==========
+UdK-2012ws
+code: Matt Karau (mkarau@gmail.com)
+Digital Class, Short-term Project: Freeze
 
 Concept: Jump over water and you photo is taken mid-air.
 
