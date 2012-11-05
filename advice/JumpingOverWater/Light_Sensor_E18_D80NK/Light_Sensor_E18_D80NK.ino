@@ -57,13 +57,13 @@ void loop () {
     // If someone was previously in the beam but is now out of the beam,
     // then we trigger a photo.  Obviously, this could be easily inverted,
     // if you wished for the moment of entering the beam to be the trigger.
-    if ((lastTimeInTheBeam) && (!lightBeamSensorActivated)) {
+    if ((!lastTimeInTheBeam) && (lightBeamSensorActivated)) {
 
       // mark the time of the jump.
       lastJumpMillis = millis();
 
       // Print the command that Processing is looking for 
-      Serial.print("Jump\n");
+      Serial.print("Jump\r\n");
     }  
   }
 }

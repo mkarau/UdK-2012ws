@@ -26,6 +26,8 @@ int lf = 10;    // Linefeed in ASCII
 String myString = null;
 Serial myPort;  // Create object from Serial class
 int val;      // Data received from the serial port
+boolean photoQueued = false;
+long photoTakenMillis = 0;
 
 void setup() 
 {
@@ -51,9 +53,14 @@ void setup()
 
 void draw()
 {
-  // LAZY! But we load the image new each time around.
-  bg = loadImage(imageFilename);
-
+  // Load the new image if enough time has passed since it was queued.
+  // This is not robust.  Should try to calculate MD5 of file and compare
+  // or ask gphoto2 to create a state file after each photo is taken.
+  if ((millis() - photoTakenMillis > 3000) && (photoQueued)) {
+    bg = loadImage(imageFilename);
+    photoQueued = false;
+  }
+  
   // Display the image
   image(bg, 0, 0, width, height);  
 }
@@ -68,12 +75,14 @@ void serialEvent(Serial p) {
     // Check we get the message desired
     if (myString.equals(jumpSignalText)) {
       // Print a message to the terminal
-      println(myString+" "+myString.length());
+      println(myString+"   length:"+myString.length());
       // and print a message to the trigger file
       output = createWriter(imageTriggerFilename); 
-      output.println(myString+" "+myString.length());
+      output.println(myString);
       output.flush(); // Writes the remaining data to the file
       output.close(); // Finishes the file 
+      photoTakenMillis = millis();
+      photoQueued = true;
     } 
 }
 
