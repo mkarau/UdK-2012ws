@@ -38,7 +38,28 @@ void setup()
   // On Windows machines, this generally opens COM1.
   // Open whatever port is the one you're using.
   String portName = Serial.list()[0];
-  myPort = new Serial(this, portName, 57600);
+  boolean connected = false;
+  long millisOfLastConnectAttempt = 0;
+  print("Waiting for Serial port .");
+  while (!connected){
+    if (millis() - millisOfLastConnectAttempt > 500) {
+      millisOfLastConnectAttempt = millis();
+      portName = Serial.list()[0];
+      String[] m = match(portName, "usbserial");
+      if (m != null) {
+        println();
+        println("Trying to Open port: "+portName);
+        try {
+          myPort = new Serial(this, portName, 57600);
+          connected = true;
+        } catch (Exception e) {
+          connected = false;
+        }
+      } else {
+        print(".");
+      }
+    }
+  }
   myPort.clear();
   // Throw out the first reading, in case we started reading 
   // in the middle of a string from the sender.
@@ -56,7 +77,7 @@ void draw()
   // Load the new image if enough time has passed since it was queued.
   // This is not robust.  Should try to calculate MD5 of file and compare
   // or ask gphoto2 to create a state file after each photo is taken.
-  if ((millis() - photoTakenMillis > 3000) && (photoQueued)) {
+  if ((millis() - photoTakenMillis > 1000) && (photoQueued)) {
     bg = loadImage(imageFilename);
     photoQueued = false;
   }
