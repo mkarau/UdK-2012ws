@@ -9,10 +9,20 @@
 
 const int numberOfLEDs = 3;
 int ledPin[numberOfLEDs];
-int blinkMillis = 500;
+int blinkMillis = 11000;
 long now = 0;
 long lastBlinkMillis = 0;
 boolean ledOn = false;
+long lastPrintMillis = 0;
+long SerialMessageIntervalMillis = 1000;
+int laserPin = 5;
+int laserLevel = 0;
+long lastLaserUpdateMillis = 0;
+long LaserUpdateMillis = 5;
+int temperature = 0;
+int temperaturePin = A2;
+long temperatureIntervalMillis = 200;
+long lastTemperatureReadingMillis = 0;
 
 
 void setup() {
@@ -24,13 +34,53 @@ void setup() {
   for (int i=0; i<numberOfLEDs; i++) {
     pinMode(ledPin[i], OUTPUT);     
   }
+  
+  pinMode(temperaturePin, INPUT);
+  digitalWrite(temperaturePin, HIGH);
+  
+  Serial.begin(57600);
 }
+
+
 
 void loop() {
   now = millis();
   
   ///  Do other things!
   
+  if ((now - lastPrintMillis) > SerialMessageIntervalMillis) {
+    lastPrintMillis = now;
+    Serial.print("Alive: ");
+    Serial.println(temperature);
+  }
+  
+//  delayMicroseconds();
+  
+  // Read Analog Port
+  if ((now - lastTemperatureReadingMillis) > temperatureIntervalMillis) {
+    lastTemperatureReadingMillis = now;
+    temperature = analogRead(temperaturePin);
+  }  
+  
+  // Lock up the system for at least 255 * 15ms
+/*
+  for (int i=0; i<255; i++) {
+    analogWrite(laserPin, i);
+    delay(15);
+  }
+*/
+  
+  // Modify PWM 
+  if ((now - lastLaserUpdateMillis) > LaserUpdateMillis) {
+    lastLaserUpdateMillis = now;
+    if (laserLevel < 255) {
+      laserLevel++;
+    } else {
+      laserLevel = 0;
+    }
+    analogWrite(laserPin, laserLevel);
+//  delay (10);
+  }
   
   if ((now - lastBlinkMillis) >= blinkMillis) {
     lastBlinkMillis = now;
