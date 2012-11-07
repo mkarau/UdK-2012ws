@@ -1,4 +1,4 @@
-#include <TimerOne.h>
+#include "TimerOne.h"
  
 long LEDBlinkTimer = 0;
 //long LEDBlinkIntervalMillis = 500;
@@ -50,7 +50,7 @@ void loop()
 /// --------------------------
 void blinky()
 {
-  stateChanged = true;
+//  stateChanged = true;
   LEDBlinkTimer = LEDBlinkTimer + TimerOneMicros;
   PrintTimer += TimerOneMicros;
   // Toggle LED
