@@ -9,16 +9,17 @@
 
 const int numberOfLEDs = 3;
 int ledPin[numberOfLEDs];
-int blinkMillis = 11000;
+int blinkMillis = 1000;
 long now = 0;
 long lastBlinkMillis = 0;
 boolean ledOn = false;
 long lastPrintMillis = 0;
-long SerialMessageIntervalMillis = 1000;
+long SerialMessageIntervalMillis = 100;
 int laserPin = 5;
 int laserLevel = 0;
+int laserLevelIncrement = 1;
 long lastLaserUpdateMillis = 0;
-long LaserUpdateMillis = 5;
+long LaserUpdateMillis = 3;
 int temperature = 0;
 int temperaturePin = A2;
 long temperatureIntervalMillis = 200;
@@ -73,10 +74,9 @@ void loop() {
   // Modify PWM 
   if ((now - lastLaserUpdateMillis) > LaserUpdateMillis) {
     lastLaserUpdateMillis = now;
-    if (laserLevel < 255) {
-      laserLevel++;
-    } else {
-      laserLevel = 0;
+    laserLevel += laserLevelIncrement;
+    if ((laserLevel >= 255) || (laserLevel <= 0)) {
+      laserLevelIncrement *= -1;
     }
     analogWrite(laserPin, laserLevel);
 //  delay (10);
