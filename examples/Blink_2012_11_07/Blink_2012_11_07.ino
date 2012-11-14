@@ -18,6 +18,8 @@ long SerialMessageIntervalMillis = 100;
 int laserPin = 5;
 int laserLevel = 0;
 int laserLevelIncrement = 1;
+int laserLevelMax = 150;
+int laserLevelMin =0;
 long lastLaserUpdateMillis = 0;
 long LaserUpdateMillis = 3;
 int temperature = 0;
@@ -49,6 +51,7 @@ void loop() {
   
   ///  Do other things!
   
+  // Print some debugging Info
   if ((now - lastPrintMillis) > SerialMessageIntervalMillis) {
     lastPrintMillis = now;
     Serial.print("Alive: ");
@@ -71,17 +74,18 @@ void loop() {
   }
 */
   
-  // Modify PWM 
+  // Modify Laser PWM 
   if ((now - lastLaserUpdateMillis) > LaserUpdateMillis) {
     lastLaserUpdateMillis = now;
     laserLevel += laserLevelIncrement;
-    if ((laserLevel >= 255) || (laserLevel <= 0)) {
+    if ((laserLevel >= laserLevelMax) || (laserLevel <= laserLevelMin)) {
       laserLevelIncrement *= -1;
     }
     analogWrite(laserPin, laserLevel);
 //  delay (10);
   }
   
+  // Blink LED
   if ((now - lastBlinkMillis) >= blinkMillis) {
     lastBlinkMillis = now;
     ledOn = !ledOn;
@@ -95,6 +99,7 @@ void loop() {
       
   }
 /*  
+// Don't Code with delays, since they block the loop from looping.
   for (int i=0; i<numberOfLEDs; i++) {
     digitalWrite(ledPin[i], HIGH);   // set the LED on
   } 
