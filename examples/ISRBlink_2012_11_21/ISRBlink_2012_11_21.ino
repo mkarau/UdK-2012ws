@@ -13,6 +13,12 @@ boolean debugPrint = true;
 boolean sensorConnected = true;
 int ledPin = 13;
 
+int outputTempSensePin = A3;
+int outputVirtualGroundPin = A2;
+
+int outputTemperature = 0;
+
+
 int tempSensePin = A1;
 int virtualGroundPin = A0;
 
@@ -20,7 +26,7 @@ int temperature = 0;
 long tempSensingTimer = 0;
 long tempSensingIntervalMicros = 50000;
 
-float numberOfSampleInTemeratureAverage = 200.0f;
+float numberOfSampleInTemeratureAverage = 50.0f;
 float temperatureAverage = 0.0f;
 float weightOfOldAverage = 0.0f;
 float weightOfNewSample = 0.0f;
@@ -29,10 +35,25 @@ float newTemperatureValue = 0.0f;
 long tempSensingAvgTimer = 0;
 long TempSensingAvgIntervalMicros = 10000;
 
+int heaterTransistorGatePin = 3;
+int heaterOutputLevel = 0;
+
 void setup() 
 {
+  
+  pinMode (heaterTransistorGatePin, OUTPUT);
+  digitalWrite(heaterTransistorGatePin, LOW);
+  
   weightOfOldAverage = (numberOfSampleInTemeratureAverage - 1.0f) / numberOfSampleInTemeratureAverage; 
   weightOfNewSample = 1.0f / numberOfSampleInTemeratureAverage;
+
+  // Use A0 as virtual GND
+  pinMode(outputVirtualGroundPin, OUTPUT);
+  digitalWrite(outputVirtualGroundPin, LOW);
+  
+  // A1 is our sensing pin.  We need to have a pull-up to create voltage-divider.
+  pinMode(outputTempSensePin, INPUT);
+  digitalWrite(outputTempSensePin, HIGH);
   
   // Use A0 as virtual GND
   pinMode(virtualGroundPin, OUTPUT);
@@ -59,10 +80,25 @@ void loop()
     stateChanged = false;
   }
 */  
+  if (temperature < outputTemperature) {
+    if (heaterOutputLevel < 255) {
+      heaterOutputLevel = heaterOutputLevel + 1; 
+    }
+  }
+  if (temperature > outputTemperature) {
+    if (heaterOutputLevel > 0) {
+      heaterOutputLevel = heaterOutputLevel - 1; 
+    }  
+  }
+  
+  analogWrite(heaterTransistorGatePin, heaterOutputLevel);
+
+
   if (tempSensingTimer >= tempSensingIntervalMicros) {
     tempSensingTimer = 0;
     temperature = analogRead(tempSensePin);
-    if ((temperature < 15) || (temperature > 1022)) {
+    outputTemperature = analogRead(outputTempSensePin);
+    if ((temperature < 15) || (temperature > 1022) || (outputTemperature < 15) || (outputTemperature > 1022)) {
       sensorConnected = false;
     } else {
       sensorConnected = true;
@@ -91,8 +127,14 @@ void loop()
     if (debugPrint) Serial.print("Temp: ");
     if (sensorConnected) {
       if (debugPrint) Serial.print(temperature);
-      if (debugPrint) Serial.print("\t");
-      if (debugPrint) Serial.println((int)temperatureAverage);
+      if (debugPrint) Serial.print("\tAvg: ");
+      if (debugPrint) Serial.print((int)temperatureAverage);
+      if (debugPrint) Serial.print("\tOutputTemp ");
+      if (debugPrint) Serial.print(outputTemperature);
+      if (debugPrint) Serial.print("\tOutput:");
+      if (debugPrint) Serial.print(heaterOutputLevel);
+      if (debugPrint) Serial.println();
+      
  
     } else {
       if (debugPrint) Serial.println("Check Sensor Connection");
