@@ -11,6 +11,14 @@ long PrintIntervalMicros = 100000;
  
 void setup() 
 {
+  // Use A0 as virtual GND
+  pinMode(A0, OUTPUT);
+  digitalWrite(A0, LOW);
+  
+  // A1 is our sensing pin.  We need to have a pull-up to create voltage-divider.
+  pinMode(A1, INPUT);
+  digitalWrite(A1, HIGH);
+  
   // Initialize the digital pin as an output.
   // Pin 13 has an LED connected on most Arduino boards
   pinMode(13, OUTPUT);    
