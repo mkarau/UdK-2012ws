@@ -9,6 +9,8 @@ long PrintTimer = 0;
 //long PrintIntervalMillis = 100;
 long PrintIntervalMicros = 100000;
 
+boolean debugPrint = true;
+boolean sensorConnected = true;
 int ledPin = 13;
 
 int tempSensePin = A1;
@@ -16,10 +18,22 @@ int virtualGroundPin = A0;
 
 int temperature = 0;
 long tempSensingTimer = 0;
-long tempSensingIntervalMicros = 500000;
+long tempSensingIntervalMicros = 50000;
+
+float numberOfSampleInTemeratureAverage = 200.0f;
+float temperatureAverage = 0.0f;
+float weightOfOldAverage = 0.0f;
+float weightOfNewSample = 0.0f;
+float newTemperatureValue = 0.0f;
+
+long tempSensingAvgTimer = 0;
+long TempSensingAvgIntervalMicros = 10000;
 
 void setup() 
 {
+  weightOfOldAverage = (numberOfSampleInTemeratureAverage - 1.0f) / numberOfSampleInTemeratureAverage; 
+  weightOfNewSample = 1.0f / numberOfSampleInTemeratureAverage;
+  
   // Use A0 as virtual GND
   pinMode(virtualGroundPin, OUTPUT);
   digitalWrite(virtualGroundPin, LOW);
@@ -48,10 +62,23 @@ void loop()
   if (tempSensingTimer >= tempSensingIntervalMicros) {
     tempSensingTimer = 0;
     temperature = analogRead(tempSensePin);
+    if ((temperature < 15) || (temperature > 1022)) {
+      sensorConnected = false;
+    } else {
+      sensorConnected = true;
+    }
+  }
+  
+  if (tempSensingAvgTimer >= TempSensingAvgIntervalMicros) {
+    tempSensingAvgTimer = 0;
+    if (sensorConnected) {
+      temperatureAverage = (weightOfOldAverage * temperatureAverage) + (weightOfNewSample * temperature);
+    }
+    
   }
   
   if (LEDBlinkTimer >= LEDBlinkIntervalMicros) {
-//    Serial.println(LEDBlinkTimer);
+//    if debugPrint Serial.println(LEDBlinkTimer);
     LEDBlinkTimer = 0;
     int state = digitalRead(ledPin); 
 //    delay(300);
@@ -60,9 +87,16 @@ void loop()
   
   if (PrintTimer >= PrintIntervalMicros) {
     PrintTimer = 0;
-    Serial.print("Alive.\t");
-    Serial.print("Temp: ");
-    Serial.println(temperature);
+    if (debugPrint) Serial.print("Alive.\t");
+    if (debugPrint) Serial.print("Temp: ");
+    if (sensorConnected) {
+      if (debugPrint) Serial.print(temperature);
+      if (debugPrint) Serial.print("\t");
+      if (debugPrint) Serial.println((int)temperatureAverage);
+ 
+    } else {
+      if (debugPrint) Serial.println("Check Sensor Connection");
+    }    
   }
   
   // Main code loop
@@ -75,6 +109,7 @@ void loop()
 void blinky()
 {
 //  stateChanged = true;
+  tempSensingAvgTimer += TimerOneMicros;
   LEDBlinkTimer = LEDBlinkTimer + TimerOneMicros;
   PrintTimer += TimerOneMicros;
   tempSensingTimer += TimerOneMicros;
