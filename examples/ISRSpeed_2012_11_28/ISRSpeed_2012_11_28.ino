@@ -38,8 +38,8 @@ float newTemperatureValue = 0.0f;
 
 // For storing Averages of input and output temperatures
 volatile long pulses = 0;
-float pulsesPerSecond = 0.0f;
-float pulsesPerSecondAverage = 0.0f;
+volatile float pulsesPerSecond = 0.0f;
+volatile float pulsesPerSecondAverage = 0.0f;
 
 float targetPulsesPerSecond = 1000.0f;
 
@@ -56,45 +56,6 @@ int ledPin = 13;
 
 void setup() 
 {
-  /* Pins 5 and 6: controlled by Timer 0
-
-  Setting 	Divisor 	Frequency
-  0x01 	 	1 	 	62500
-  0x02  	8 	 	7812.5
-  0x03  	64 	 	976.5625
-  0x04 	 	256 	 	244.140625
-  0x05 	 	1024 	 	61.03515625
-
-  TCCR0B = TCCR0B & 0b11111000 | <setting>;
-  */
-
-  /*
-  Pins 9 and 10: controlled by timer 1
-
-  Setting 	Divisor 	Frequency
-  0x01 	 	1 	 	31250
-  0x02 	 	8 	 	3906.25
-  0x03 		64 	 	488.28125
-  0x04 		256 	 	122.0703125
-  0x05 	 	1024 	 	30.517578125
-
-TCCR1B = TCCR1B & 0b11111000 | <setting>;
-  */
-  /*
-  Pins 11 and 3: controlled by timer 2
-
-  Setting 	Divisor 	Frequency
-  0x01 	 	1  		31250
-  0x02 	 	8 	 	3906.25
-  0x03  	32  		976.5625
-  0x04 	 	64 	 	488.28125
-  0x05 	 	128  		244.140625
-  0x06  	256  		122.0703125
-  0x07 	 	1024  		30.517578125
-  */
-  // Configure PWM with 3.906kHz on pins 3 and 11
-  TCCR2B = TCCR2B & 0b11111000 | 0x03;
-  
   // Configure the N-FET gate pin as an output, connected to GND at first
   // to switch off the transistor.  
   pinMode (motorTransistorGatePin, OUTPUT);
