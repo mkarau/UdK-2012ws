@@ -5,7 +5,7 @@ long TimerOneMicros = 500;
 
 // For keeping track of when to update the output
 long outputUpdateTimer = 0;
-long outputUpdateIntervalMicros = 10000;
+long outputUpdateIntervalMicros = 5000;
 
 // For keeping track of when to blink the LED
 long LEDBlinkTimer = 0;
@@ -17,7 +17,7 @@ long PrintIntervalMicros = 250000;
 
 // For keeping track of when to calculate the Pulses Per Second
 long pulsesPerSecondTimer = 0;
-long pulsesPerSecondIntervalMicros = 50000;
+long pulsesPerSecondIntervalMicros = 100000;
 
 // For keeping track of when to calculate the average Pulses Per Second
 long pulsesPerSecondAvgTimer = 0;
@@ -56,6 +56,22 @@ int ledPin = 13;
 
 void setup() 
 {
+  
+   /*
+  Pins 11 and 3: controlled by timer 2
+
+  Setting 	Divisor 	Frequency
+  0x01 	 	1  		31250
+  0x02 	 	8 	 	3906.25
+  0x03  	32  		976.5625
+  0x04 	 	64 	 	488.28125
+  0x05 	 	128  		244.140625
+  0x06  	256  		122.0703125
+  0x07 	 	1024  		30.517578125
+  */
+  // Configure PWM with 976.5625Hz on pins 3 and 11
+  TCCR2B = TCCR2B & 0b11111000 | 0x03;
+  
   // Configure the N-FET gate pin as an output, connected to GND at first
   // to switch off the transistor.  
   pinMode (motorTransistorGatePin, OUTPUT);
@@ -104,7 +120,7 @@ void loop()
     }
     if (pulsesPerSecondAverage > targetPulsesPerSecond) {
       if (motorOutputLevelFloat > 1.0f) {
-        motorOutputLevelFloat -= 0.5f; 
+        motorOutputLevelFloat -= 1.0f; 
       } else {
         motorOutputLevelFloat = 0.0f;
       }
