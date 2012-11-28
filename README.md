@@ -11,6 +11,8 @@ UdK Winter Semester 2012-2013 source code and links
 	* 2012-10-31: [Presentation](https://docs.google.com/presentation/d/1HBFUgdbaNKY96zZIMon7oRHsegYqo_z4ig4FxaA8W8g/edit)
 	* 2012-11-07: [Presentation: More Timing and Project Dissection](https://docs.google.com/presentation/d/1Qf-z8g8-m9E56QxVy2YxYnS6FiuNjo_ShpAD-7LUmes/edit)
 	* 2012-11-14: [Presentation: Mechanics, from nothing](https://docs.google.com/presentation/d/1TGuGqc8SHlH4y3iQK69Bn3U3TAFjRazTc0QHwheeB7s/edit)
+	* 2012-11-21: [Presentation: Heaters and Feedback](https://docs.google.com/presentation/d/10Et75HgwELm5fibwzO1Co-2y-Vx-SIA7nkqhOPqhcqA/edit)
+	* 2012-11-28: [Presentation: Heaters, Servos, Torque!, Speed Control]()
 
 * E-Mail list: [udk-electronics@ex-ch.com](mailto:udk-electronics@ex-ch.com)
 
