@@ -12,7 +12,7 @@ long startOfPingMillis = 0;
 long endOfPingMillis = 0;
 long lengthOfPingMillis = 0;
 volatile boolean noResponse = true;
-boolean debugPrint = true;
+boolean debugPrint = false;
 float speedOfSoundMetersPerSecond = 340.29f;
 float distance = 0.0f;
 
