@@ -1,21 +1,21 @@
 /********************************************************
  * PID Basic Example
  * Reading analog input 0 as the SetPoint
- * Reading analog input 2 as the realWorldOuput
+ * Reading analog input 2 as the realWorldTemperature
  * Control analog PWM output 3 to turn on heater
  ********************************************************/
 
 #include <PID_v1.h>
 
 //Define Variables we'll be connecting to
-double Setpoint, Input, Output;
+double Setpoint, realWorldTemperature, Output;
 
 //Specify the links and initial tuning parameters
-PID myPID(&Input, &Output, &Setpoint,2,5,1, REVERSE);
+PID myPID(&realWorldTemperature, &Output, &Setpoint, 2, 5, 1, REVERSE);
 
 void setup()
 {
-  //initialize the variables we're linked to
+  
   pinMode(A0, INPUT);
   digitalWrite(A0, HIGH);
   
@@ -27,10 +27,11 @@ void setup()
   
   pinMode(A3, OUTPUT);
   digitalWrite(A3, LOW);
-
+  
+  //initialize the variables we're linked to
   
   Setpoint = analogRead(A0);
-  Input = analogRead(A2);
+  realWorldTemperature = analogRead(A2);
 
   //turn the PID on
   myPID.SetMode(AUTOMATIC);
@@ -40,13 +41,13 @@ void setup()
 void loop()
 {
   Setpoint = analogRead(A0);  
-  Input = analogRead(A2);
+  realWorldTemperature = analogRead(A2);
   myPID.Compute();
   analogWrite(3,Output);
 
   Serial.print(Setpoint);
   Serial.print("\t");
-  Serial.print(Input);
+  Serial.print(realWorldTemperature);
   Serial.print("\t");
   Serial.println(Output);
 }
