@@ -1,6 +1,8 @@
 /********************************************************
  * PID Basic Example
- * Reading analog input 0 to control analog PWM output 3
+ * Reading analog input 0 as the SetPoint
+ * Reading analog input 2 as the realWorldOuput
+ * Control analog PWM output 3 to turn on heater
  ********************************************************/
 
 #include <PID_v1.h>
@@ -27,8 +29,8 @@ void setup()
   digitalWrite(A3, LOW);
 
   
-  Input = analogRead(A0);
-  Setpoint = analogRead(A2);
+  Setpoint = analogRead(A0);
+  Input = analogRead(A2);
 
   //turn the PID on
   myPID.SetMode(AUTOMATIC);
@@ -37,8 +39,8 @@ void setup()
 
 void loop()
 {
-  Setpoint = analogRead(A2);  
-  Input = analogRead(A0);
+  Setpoint = analogRead(A0);  
+  Input = analogRead(A2);
   myPID.Compute();
   analogWrite(3,Output);
 
