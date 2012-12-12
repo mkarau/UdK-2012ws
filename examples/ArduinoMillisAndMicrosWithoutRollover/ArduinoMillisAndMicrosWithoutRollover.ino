@@ -115,7 +115,7 @@ void loop() {
   Set believe=false; to enable  the printing below.
 */  
 
-  boolean believe = true;
+  boolean believe = false;
   if (!believe) {
     if ((unsigned long)(micros() - nextPrintMicros) >= printIntervalMicros) { 
       nextPrintMicros += printIntervalMicros;
@@ -149,6 +149,9 @@ void loop() {
 
       Serial.print("-2 = ");
       Serial.println((unsigned long)(0-2));
+      
+      Serial.print("Our unbelievable interval = ");
+      Serial.println((unsigned long)(800 - 4294967095));
     }
   }
   
