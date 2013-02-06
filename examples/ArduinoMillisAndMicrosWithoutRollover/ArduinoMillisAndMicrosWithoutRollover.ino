@@ -7,21 +7,26 @@
   Matt Karau
 */
 
+unsigned long nowMicros;
 
 unsigned long LEDBlinkIntervalMillis = 1000;
-unsigned long nextLEDBlinkMillis=0;
+unsigned long lastLEDBlinkMillis=0;
 
-unsigned long LEDBlinkIntervalMicros = 1000000;
-unsigned long nextLEDBlinkMicros=0;
+unsigned long LEDBlinkIntervalMicros = 5000000;  // 5,000,000 us = 10 s
+unsigned long lastLEDBlinkMicros=0;
 
-unsigned long printIntervalMicros = 10000000;
-unsigned long nextPrintMicros=0;
+unsigned long printIntervalMicros = 10000000;   // 10,000,000 us = 10 s
+unsigned long lastPrintMicros=0;
 
-int redLEDPin = 13;
-int greenLEDPin = 12;
+int redLEDPin = 12;
+int greenLEDPin = 13;
  
  
 void setup() {
+  lastPrintMicros = (unsigned long)(-1 * printIntervalMicros);
+  lastLEDBlinkMicros = (unsigned long)(-1 * LEDBlinkIntervalMicros);
+  lastLEDBlinkMillis = (unsigned long)(-1 * LEDBlinkIntervalMillis);
+  
   pinMode(redLEDPin, OUTPUT);
   pinMode(greenLEDPin, OUTPUT);
   Serial.begin(57600);
@@ -30,9 +35,9 @@ void setup() {
  
 void loop() {
   
-  if ((unsigned long)(millis() - nextLEDBlinkMillis) >= LEDBlinkIntervalMillis) {  // Check if it's time to blink.
+  if ((unsigned long)(millis() - lastLEDBlinkMillis) >= LEDBlinkIntervalMillis) {  // Check if it's time to blink.
     digitalWrite(redLEDPin, !digitalRead(redLEDPin));  // Toggle the LED.
-    nextLEDBlinkMillis += LEDBlinkIntervalMillis;  // Set the time that we should next blink.
+    lastLEDBlinkMillis = millis();  // Set the time that we should next blink.
   } 
     
   /*
@@ -44,25 +49,26 @@ void loop() {
   
     1.  Initial State:
       LEDBlinkIntervalMillis = 1000;
-      current nextLEDBlinkMillis = 4,294,966,095
+      current lastLEDBlinkMillis = 4,294,966,095
       current millis() = 4,294,967,094  (max = 4,294,967,295)
-      millis() - nextLEDBlinkMillis = 999
+      millis() - lastLEDBlinkMillis = 999
    
-    2.  One millisecond passes, and now millis() is greater than nextLEDBlinkMillis by 1000...
-      current nextLEDBlinkMillis = 4,294,966,095
+    2.  One millisecond passes, and now millis() is greater than lastLEDBlinkMillis by 1000...
+      current lastLEDBlinkMillis = 4,294,966,095
       current millis() = 4,294,967,095
-      millis() - nextLEDBlinkMillis = 1000
+      millis() - lastLEDBlinkMillis = 1000
   
-    The condition "if ((unsigned long)(millis() - nextLEDBlinkMillis) >= LEDBlinkIntervalMillis)"
-    evaluates true.  We blink the LED and add 1000 to nextLEDBlinkMillis, becomes 4,294,966,095.
+    The condition "if ((unsigned long)(millis() - lastLEDBlinkMillis) >= LEDBlinkIntervalMillis)"
+    evaluates true.  We blink the LED and add 1000 to lastLEDBlinkMillis, becomes 4,294,966,095.
   
     3.  One second passes, and now millis() would be 4,294,968,095 but has instead 
     rolled-over the max 4,294,967,295 by 800 (4,294,968,095 - 4,294,967,295).
-      current nextLEDBlinkMillis = 4,294,967,095
+      current lastLEDBlinkMillis = 4,294,967,095
       current millis() = 800
-      millis() - nextLEDBlinkMillis = -4,294,965,295
+      millis() - lastLEDBlinkMillis = -4,294,965,295
 
-    We need to now carefully walk through how the condition "if ((unsigned long)(millis() - nextLEDBlinkMillis) >= LEDBlinkIntervalMillis)"
+    We need to now carefully walk through how the condition
+    "if ((unsigned long)(millis() - lastLEDBlinkMillis) >= LEDBlinkIntervalMillis)"
     is evaluated.
       if ((unsigned long)(800 - 4,294,966,095) >= 1000)
       if ((unsigned long)(-4,294,965,295) >= 1000)
@@ -72,6 +78,7 @@ void loop() {
     the result to be "(unsigned long)", the value wraps around backwards and becomes 1000.
     
     e.g. The moments before and after roll-over.
+          (unsigned long)(millis() - lastLEDBlinkMillis)
           (unsigned long)(4,294,967,294 - 4,294,967,095) = (unsigned long)(199) = 199
           (unsigned long)(4,294,967,295 - 4,294,967,095) = (unsigned long)(200) = 200
           --- ROLL-OVER ---   
@@ -82,9 +89,9 @@ void loop() {
           ...
           ...
           ...
-          (unsigned long)(798 - 4,294,967,095) = (unsigned long)(-4,294,966,297) = 998
-          (unsigned long)(799 - 4,294,967,095) = (unsigned long)(-4,294,966,296) = 999
-          (unsigned long)(800 - 4,294,967,095) = (unsigned long)(-4,294,966,295) = 1000
+          (unsigned long)(798 - 4,294,967,095) = (unsigned long)(-4,294,966,297) = 990
+          (unsigned long)(799 - 4,294,967,095) = (unsigned long)(-4,294,966,296) = 1000
+          (unsigned long)(800 - 4,294,967,095) = (unsigned long)(-4,294,966,295) = 1001
     
     When we keep track of time in this manner, we inherently take care of the "roll-over problem".  Using
     millis(), the maximum time between events (LEDBlinkIntervalMicros) is limited to around 49.7 days.
@@ -115,10 +122,11 @@ void loop() {
   Set believe=false; to enable  the printing below.
 */  
 
-  boolean believe = false;
+  boolean believe = true;
+  
   if (!believe) {
-    if ((unsigned long)(micros() - nextPrintMicros) >= printIntervalMicros) { 
-      nextPrintMicros += printIntervalMicros;
+    if ((unsigned long)(micros() - lastPrintMicros) >= printIntervalMicros) { 
+      lastPrintMicros = micros();
       Serial.println("Roll-over from counting UP.");
       Serial.println();
     
@@ -161,9 +169,13 @@ void loop() {
     is limited to 4294967295 us = 71.6 minutes.
 */
 
-  if ((unsigned long)(micros() - nextLEDBlinkMicros) >= LEDBlinkIntervalMicros) { 
+  nowMicros = micros();
+  if ((unsigned long)(nowMicros - lastLEDBlinkMicros) >= LEDBlinkIntervalMicros) { 
     digitalWrite(greenLEDPin, !digitalRead(greenLEDPin));
-    nextLEDBlinkMicros += LEDBlinkIntervalMicros;
+    lastLEDBlinkMicros = nowMicros;
+    Serial.print(((float)nowMicros/(float)60000000));
+    Serial.print("\t");
+    Serial.println (nowMicros - lastLEDBlinkMicros);
   } 
 
 }

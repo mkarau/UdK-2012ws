@@ -10,22 +10,22 @@
 const int numberOfLEDs = 3;
 int ledPin[numberOfLEDs];
 int blinkMillis = 1000;
-long now = 0;
-long lastBlinkMillis = 0;
+unsigned long now = 0;
+unsigned long lastBlinkMillis = 0;
 boolean ledOn = false;
-long lastPrintMillis = 0;
-long SerialMessageIntervalMillis = 100;
+unsigned long lastPrintMillis = 0;
+unsigned long SerialMessageIntervalMillis = 100;
 int laserPin = 5;
 int laserLevel = 0;
 int laserLevelIncrement = 1;
 int laserLevelMax = 150;
 int laserLevelMin =0;
-long lastLaserUpdateMillis = 0;
-long LaserUpdateMillis = 3;
+unsigned long lastLaserUpdateMillis = 0;
+unsigned long LaserUpdateMillis = 3;
 int temperature = 0;
 int temperaturePin = A2;
-long temperatureIntervalMillis = 200;
-long lastTemperatureReadingMillis = 0;
+unsigned long temperatureIntervalMillis = 200;
+unsigned long lastTemperatureReadingMillis = 0;
 
 
 void setup() {
@@ -52,7 +52,7 @@ void loop() {
   ///  Do other things!
   
   // Print some debugging Info
-  if ((now - lastPrintMillis) > SerialMessageIntervalMillis) {
+  if ((unsigned long)(now - lastPrintMillis) > SerialMessageIntervalMillis) {
     lastPrintMillis = now;
     Serial.print("Alive: ");
     Serial.println(temperature);
@@ -61,7 +61,7 @@ void loop() {
 //  delayMicroseconds();
   
   // Read Analog Port
-  if ((now - lastTemperatureReadingMillis) > temperatureIntervalMillis) {
+  if ((unsigned long)(now - lastTemperatureReadingMillis) > temperatureIntervalMillis) {
     lastTemperatureReadingMillis = now;
     temperature = analogRead(temperaturePin);
   }  
@@ -75,7 +75,7 @@ void loop() {
 */
   
   // Modify Laser PWM 
-  if ((now - lastLaserUpdateMillis) > LaserUpdateMillis) {
+  if ((unsigned long)(now - lastLaserUpdateMillis) > LaserUpdateMillis) {
     lastLaserUpdateMillis = now;
     laserLevel += laserLevelIncrement;
     if ((laserLevel >= laserLevelMax) || (laserLevel <= laserLevelMin)) {
@@ -86,7 +86,7 @@ void loop() {
   }
   
   // Blink LED
-  if ((now - lastBlinkMillis) >= blinkMillis) {
+  if ((unsigned long)(now - lastBlinkMillis) >= blinkMillis) {
     lastBlinkMillis = now;
     ledOn = !ledOn;
     for (int i=0; i<numberOfLEDs; i++) {
