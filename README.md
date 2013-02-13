@@ -15,6 +15,8 @@ UdK Winter Semester 2012-2013 source code and links
 	* 2012-11-28: [Presentation: Heaters, Servos, Torque!, Speed Control](https://docs.google.com/presentation/d/1PuM_DllpfptaFKGTGtWUtmzp57ggHV5iEYYpO_yGLRs/edit)
 	* 2012-12-05: [Presentation: NONE, Live Demos of Test Equipment](http://en.wikipedia.org/wiki/Electronic_test_equipment)
 	* 2012-12-12: [Presentation: Timing, Feedback, Damping, PID](https://docs.google.com/presentation/d/10ci_HBTKFvkulfMkq_BsN02wmNIebfyrC4ieCAMfec8/edit)
+	* 2013-02-06: No Presentation, DealExtreme-ing, Battery, Bluetooth, Power Buttons
+	* 2013-02-13: [Google Doc: Interesting Components](https://docs.google.com/spreadsheet/ccc?key=0AlntgME7mYREdFduOTNMcnNnem5nSVBDek50emtpbUE&usp=sharing) 
 
 * E-Mail list: [udk-electronics@ex-ch.com](mailto:udk-electronics@ex-ch.com)
 
